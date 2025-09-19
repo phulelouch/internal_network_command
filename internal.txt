@@ -1,0 +1,10 @@
+Getting hosts:
+    nmap -v -sn 10.10.10.254/24 10.10.20.254/24 10.10.30.254/24 10.10.88.1/24 10.10.150.254/24 192.168.119.245/24 -oN nmap_ping.txt
+Reading:
+    cat nmap_ping.txt | grep -v "host down" | grep -v ":9100" | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' > nmap_hosts.txt
+Nuclei:
+    nuclei -l nmap_hosts.txt -o nuclei-9-dec.txt -stats -et cloud,code,dns,file -no-mhe
+Nmap with vuln script:
+    rustscan -a nmap_hosts.txt -- -sC -sV -A -T4 --script=vuln > rustscan_nmap.txt
+Output nmap to ip and port
+    sed -n 's/^Open //p' rustscan_nmap.txt > ip_and_port.txt
